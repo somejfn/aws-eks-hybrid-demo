@@ -1,0 +1,15 @@
+clusterName: eks-hybrid-demo
+
+serviceAccount:
+  name: aws-load-balancer-controller-sa
+  create: true
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: eks.amazonaws.com/compute-type
+          operator: NotIn
+          values:
+          - hybrid
