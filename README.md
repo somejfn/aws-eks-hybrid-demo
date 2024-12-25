@@ -1,5 +1,5 @@
 # aws-eks-hybrid-demo
-Demonstration of AWS' EKS hybrid nodes using Promox on-premises
+Demonstration of AWS' EKS hybrid nodes using Proxmox on-premises
 
 I used these terraform samples to rapidly build/destroy a test environment made of:
 * A new VPC with 3 private subnets for EKS and 3 public subnets for internet access via a single NAT gateway
@@ -13,9 +13,9 @@ From there I could test a series of things where I kept the Kubernetes related f
 
 I used the AWS CNI in its default configuration for EC2 node pool and Cilium CNI for the onprem nodes.  Static routing is used in this setup,  meaning the router on onprem side knows how to reach the POD CIDR through each of the worker node.
 
-The AWS infrastructure Terraform outputs a test SSM activation token/id valid for 24 hours that you can pass as input to the Promox Terraform. I do need to bring up the S2S VPN every time between the router and the AWS infra deployment before deploying the Proxmox VMs since they join the private EKS cluster on fist boot assuming it is reacheable at that time.  To run the Proxmox terraform, you do need to set creds as described https://registry.terraform.io/providers/Telmate/proxmox/latest/docs
+The AWS infrastructure Terraform outputs a test SSM activation token/id valid for 24 hours that you can pass as input to the Proxmox Terraform. I do need to bring up the S2S VPN every time between the router and the AWS infra deployment before deploying the Proxmox VMs since they join the private EKS cluster on fist boot assuming it is reacheable at that time.  To run the Proxmox terraform, you do need to set creds as described https://registry.terraform.io/providers/Telmate/proxmox/latest/docs
 
-Note the Promox TF assumes local storage only (local and local-lvm storage used)
+Note the Proxmox TF assumes local storage only (local and local-lvm storage used)
 
 If everything runs as exptected you will see your EC2 nodes in ready state (since they have the AWS CNI installed by TF) and hybrid nodes not ready yet:
 
