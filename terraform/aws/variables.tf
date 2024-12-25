@@ -27,7 +27,6 @@ variable "private_subnet_cidrs" {
 
 variable "vpn_customer_gw" {
   type    = string
-  default = "99.99.99.99"
 }
 
 variable "vpn_customer_worker_cidr" {

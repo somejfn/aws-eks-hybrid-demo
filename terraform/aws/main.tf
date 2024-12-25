@@ -29,7 +29,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   create_node_security_group = true
-  
+
   # Workaround for https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1986
   node_security_group_tags = {
     "kubernetes.io/cluster/${var.cluster_name}" = null
@@ -67,7 +67,7 @@ module "eks" {
 
   access_entries = {
     hybrid-node-role = {
-      principal_arn =  module.eks_hybrid_node_role.arn
+      principal_arn = module.eks_hybrid_node_role.arn
       type          = "HYBRID_LINUX"
     }
     root = {
@@ -103,10 +103,10 @@ module "eks" {
 }
 
 module "eks_hybrid_node_role" {
-  source = "terraform-aws-modules/eks/aws//modules/hybrid-node-role"
-  cluster_arns = [module.eks.cluster_arn]
-  name = "EKSHybridNode"
-
+  source          = "terraform-aws-modules/eks/aws//modules/hybrid-node-role"
+  cluster_arns    = [module.eks.cluster_arn]
+  name            = "EKSHybridNode"
+  use_name_prefix = false
   tags = {
     ClusterName = var.cluster_name
   }
@@ -154,12 +154,14 @@ resource "aws_eks_addon" "kube-proxy" {
   cluster_name                = module.eks.cluster_name
   addon_name                  = "kube-proxy"
   resolve_conflicts_on_update = "OVERWRITE"
+  depends_on                  = [resource.aws_eks_addon.cni]
 }
 
 resource "aws_eks_addon" "eks-pod-identity-agent" {
   cluster_name                = module.eks.cluster_name
   addon_name                  = "eks-pod-identity-agent"
   resolve_conflicts_on_update = "OVERWRITE"
+  depends_on                  = [resource.aws_eks_addon.cni]
 }
 
 module "aws_lb_controller_pod_identity" {
@@ -184,4 +186,16 @@ module "aws_lb_controller_pod_identity" {
   tags = {
     Environment = "dev"
   }
+}
+
+resource "aws_ssm_activation" "test" {
+  name               = "test_ssm_activation"
+  description        = "Test"
+  iam_role           = module.eks_hybrid_node_role.name
+  registration_limit = "5"
+  depends_on         = [module.eks_hybrid_node_role]
+}
+
+output "ssm_activation" {
+  value = resource.aws_ssm_activation.test
 }
