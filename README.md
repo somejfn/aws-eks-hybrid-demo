@@ -7,6 +7,8 @@ I used these terraform samples to rapidly build/destroy a test environment made 
 * A private EKS cluster ready to add Amazon linux hybrid nodes using SSM
 * One or more AL2023 worker VMs joining the EKS cluster (the Amazon Linux 2023 is already there as a template)
 
+![The demo diagram](eks-hybrid.png)
+
 From there I could test a series of things where I kept the Kubernetes related files (under k8s) to test hybrid scenarios such as load balancing from onprem with MetalLB and NLBs/ALBs from AWS
 
 I used the AWS CNI in its default configuration for EC2 node pool and Cilium CNI for the onprem nodes.  Static routing is used in this setup,  meaning the router on onprem side knows how to reach the POD CIDR through each of the worker node.
