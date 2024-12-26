@@ -18,6 +18,11 @@ variable "hybrid_nodes_template" {
   default = "AL2023"
 }
 
+variable "hybrid_nodes_topology_zone" {
+  type    = string
+  default = "ca-central-dc1"
+}
+
 variable "hybrid_nodes_name_prefix" {
   type    = string
   default = "eks"
@@ -53,5 +58,5 @@ variable "aws_ssm_activation_code" {
 }
 
 variable "ssh_pub_key" {
-  type    = string
+  type = string
 }
