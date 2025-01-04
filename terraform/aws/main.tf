@@ -188,6 +188,33 @@ module "aws_lb_controller_pod_identity" {
   }
 }
 
+
+module "external_dns_pod_identity" {
+  count  = var.enable_private_ingress_zone == true ? 1 : 0
+  source = "terraform-aws-modules/eks-pod-identity/aws"
+
+  name = "external-dns"
+
+  attach_external_dns_policy    = true
+  external_dns_hosted_zone_arns = [aws_route53_zone.private[0].arn]
+
+  # Pod Identity Associations
+  association_defaults = {
+    namespace       = "external-dns"
+    service_account = "external-dns-sa"
+  }
+
+  associations = {
+    ex-one = {
+      cluster_name = module.eks.cluster_name
+    }
+  }
+
+  tags = {
+    Environment = "dev"
+  }
+}
+
 resource "aws_ssm_activation" "test" {
   name               = "test_ssm_activation"
   description        = "Test"

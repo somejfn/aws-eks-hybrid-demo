@@ -26,7 +26,7 @@ variable "private_subnet_cidrs" {
 }
 
 variable "vpn_customer_gw" {
-  type    = string
+  type = string
 }
 
 variable "vpn_customer_worker_cidr" {
@@ -74,4 +74,15 @@ variable "node_groups" {
     disk_size     = 20
     subnet_ids    = []
   }]
+}
+
+# Keep this optional
+variable "enable_private_ingress_zone" {
+  type    = bool
+  default = false
+}
+
+variable "private_ingress_zone_domain" {
+  type    = string
+  default = "acme123.io"
 }
